@@ -3,14 +3,14 @@
 // PostgreSQL
 $pg_host = "10.0.0.4";
 $pg_port = "5432";
-$pg_dbname = "tu_basedatos_postgres"; // 👈 cámbialo por el nombre real
+$pg_dbname = "postgres"; // 👈 cámbialo por el nombre real
 $pg_user = "mmartine15";
 $pg_password = "Mmartine1509";
 
 // MySQL
 $mysql_host = "10.0.1.4";
 $mysql_port = "3306";
-$mysql_dbname = "tu_basedatos_mysql"; // 👈 cámbialo por el nombre real
+$mysql_dbname = "mysql"; // 👈 cámbialo por el nombre real
 $mysql_user = "mmartine15";
 $mysql_password = "19831972aE";
 
