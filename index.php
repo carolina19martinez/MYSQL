@@ -1,28 +1,57 @@
 <?php
-// ==== CONFIGURACIÓN DE CONEXIÓN MYSQL ====
+// --- CONFIGURACIONES DE CONEXIÓN ---
+// PostgreSQL
+$pg_host = "10.0.0.4";
+$pg_port = "5432";
+$pg_dbname = "tu_basedatos_postgres"; // 👈 cámbialo por el nombre real
+$pg_user = "mmartine15";
+$pg_password = "Mmartine1509";
 
-$host = 'your-mysql-server.mysql.database.azure.com';  // Ejemplo: midb.mysql.database.azure.com
-$dbname = 'your_database_name';                        // Nombre de la base de datos
-$username = 'youruser@your-mysql-server';              // Usuario (con @servidor)
-$password = 'yourpassword';                            // Contraseña
-$port = 3306;                                          // Puerto MySQL por defecto
+// MySQL
+$mysql_host = "10.0.1.4";
+$mysql_port = "3306";
+$mysql_dbname = "tu_basedatos_mysql"; // 👈 cámbialo por el nombre real
+$mysql_user = "mmartine15";
+$mysql_password = "19831972aE";
 
-try {
-    // Crear conexión con PDO
-    $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8";
-    $pdo = new PDO($dsn, $username, $password, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-    ]);
+// --- CONEXIÓN A POSTGRESQL ---
+$pg_conn = pg_connect("host=$pg_host port=$pg_port dbname=$pg_dbname user=$pg_user password=$pg_password");
 
-    echo "✅ Conexión exitosa a MySQL.<br>";
-
-    // Prueba: consulta simple
-    $stmt = $pdo->query("SELECT NOW() AS fecha_actual");
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    echo "🕒 Fecha actual en el servidor MySQL: " . $row['fecha_actual'];
-
-} catch (PDOException $e) {
-    echo "❌ Error al conectar a MySQL: " . $e->getMessage();
-    exit;
+if (!$pg_conn) {
+    die("❌ Error al conectar a PostgreSQL: " . pg_last_error());
+} else {
+    echo "✅ Conectado correctamente a PostgreSQL<br>";
 }
+
+// --- CONEXIÓN A MYSQL ---
+$mysql_conn = new mysqli($mysql_host, $mysql_user, $mysql_password, $mysql_dbname, $mysql_port);
+
+if ($mysql_conn->connect_error) {
+    die("❌ Error al conectar a MySQL: " . $mysql_conn->connect_error);
+} else {
+    echo "✅ Conectado correctamente a MySQL<br>";
+}
+
+// --- PRUEBAS DE CONSULTA ---
+echo "<hr>";
+
+// PostgreSQL: obtener versión
+$pg_result = pg_query($pg_conn, "SELECT version();");
+if ($pg_result) {
+    $pg_row = pg_fetch_row($pg_result);
+    echo "Versión de PostgreSQL: " . $pg_row[0] . "<br>";
+}
+
+// MySQL: obtener versión
+$mysql_result = $mysql_conn->query("SELECT VERSION() AS version");
+if ($mysql_result) {
+    $row = $mysql_result->fetch_assoc();
+    echo "Versión de MySQL: " . $row['version'] . "<br>";
+}
+
+// --- CERRAR CONEXIONES ---
+pg_close($pg_conn);
+$mysql_conn->close();
+
+echo "<hr>🔒 Conexiones cerradas correctamente";
 ?>
